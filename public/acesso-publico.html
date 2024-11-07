@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privado</title>
+  <link rel="stylesheet" href="assets/privado.css">
+</head>
+
+<body>
+  <h1>Apenas usuários logados podem acessar esta página</h1>
+  <button id="logout">SAIR</button>
+  <button id="btn">CARREGAR LISTA</button>
+  <div id="container">
+    <!-- usuarios -->
+  </div>
+  <script>
+    const container = document.getElementById('container')
+    async function load() {
+      const url = '/user/list'
+      const headers = { 'Authorization': `${localStorage.getItem('token')}` }
+      const response = await fetch(url, { method: 'GET', headers })
+      if (!response.ok) {
+        alert('Vc n esta logado... Redirecionando para o login...')
+        return window.location = '/index.html'
+      }
+      const dataResponse = await response.json()
+      container.innerHTML = ''
+      dataResponse.forEach(e => {
+        const el = document.createElement('p')
+        el.innerText = `ID: ${e.id}, Nome: ${e.name}, Email: ${e.email}`
+        container.appendChild(el)
+      })
+    }
+
+    document.getElementById('btn').addEventListener('click', load)
+
+    const logoutBtn = document.getElementById('logout')
+    logoutBtn.addEventListener('click', () => {
+      localStorage.clear()
+      window.location = '/acesso-publico.html'
+    })
+  </script>
+</body>
+
+</html>
